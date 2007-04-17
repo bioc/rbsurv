@@ -1,0 +1,146 @@
+% -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
+%\VignetteIndexEntry{Overview}
+%\VignetteKeywords{survival}
+%\VignetteDepends{rbsurv}
+%\VignettePackage{rbsurv}
+%documentclass[12pt, a4paper]{article}
+\documentclass[12pt]{article}
+
+\usepackage{amsmath,pstricks}
+\usepackage{hyperref}
+\usepackage[authoryear,round]{natbib}
+
+\textwidth=6.2in
+\textheight=8.5in
+%\parskip=.3cm
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+\newcommand{\scscst}{\scriptscriptstyle}
+\newcommand{\scst}{\scriptstyle}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rfunarg}[1]{{\textit{#1}}}
+
+    \newcommand{\word}{Robust likelihood-based survival modeling}
+    \newcommand{\statm}{$\psi_p$}
+     \newcommand{\acr}{rbsurv}
+     \newcommand{\acrs}{rbsurv }
+
+
+\author{HyungJun Cho, Sukwoo Kim, Jaewoo Kang, Jae Won Lee}
+\begin{document}
+\title{How to use the rbsurv Package}
+
+\maketitle
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+
+The \Rpackage{rbsurv} package is designed to select survival-associated genes,
+based on a likelihood function.
+It utilizes the partial likelihood of the Cox model which
+has been the basis for many of the existing methods. Our
+algorithm is simple and straight-forward, but its functions such as
+the generation of multiple gene models and the incorporation of
+significant risk factors are practical. For robustness, this package also
+selects survival-associated genes by separating train and validation
+sets of samples because such a cross-validation technique is
+essential in predictive modeling for data with large variability. It
+employs forward selection, the limitation of which is mitigated by
+generating a series of gene models and selecting an optimal model.
+Furthermore, iterative runs after putting aside the previously
+selected genes can discover the masked genes that may be missed by
+forward selection (see Cho et al. for details).
+The \Rpackage{rbsurv} package employs libraries \Rpackage{survival} and \Rpackage{Biobase}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Example: Glioma Data}
+We demonstrate the use of the package with a microarray data set
+for patients with gliomas. This real data set consists of gene
+expression value, survival time, and censoring status of each of 85 patients with gliomas (Freije et al., 2004).
+For this study, Affymetrix U133A and U133B chips were used and dCHIP was
+used to convert data files (.CEL) into expression values with median
+intensity normalization. This data set originally consists of more than 40,000 probe sets,
+but only a sub-dataset made up of 100 probe sets was stored into the \Rpackage{rbsurv} package for demonstration.
+
+\newpage
+To run  \Rpackage{rbsurv}, the data can be prepared as follows.
+
+<<>>=
+library(rbsurv)
+data(glioma)
+ls()
+dim(glioma.x) #Expresssion values of 100 genes for 85 patients
+glioma.y[1:5,] #survival time and censoring status for 85 patients
+glioma.cov[1:5,] #two covariates for 85 patients
+
+
+time <- glioma.y$Time
+status <- glioma.y$Status
+z <- glioma.cov
+x <- log2(glioma.x) #Transformation
+@
+
+We here took log2-transformation wihtout any other normalizations.
+An appropriate normalization can be taken if needed.
+If the data is ready, \Rpackage{rbsurv} can be run as follows.
+
+<<>>=
+fit <-  rbsurv(time=time, status=status, x=x, method="efron", max.n.genes=20)
+@
+
+This sequentially selects genes one gene at a time to build an optimal gene model.
+Once a large gene model is constructed, an optimal gene model is determined by AICs.
+If there exist ties in survival times, Efron's method is used (\Rfunarg{method="efron"}).
+Note that it is computationally expensive and the data is high-throughput.
+Therefore, you should be patient to obtain the output.
+To save time, we can reduce the number of genes considered up to 50 genes among 200 initial genes
+(\Rfunarg{max.n.genes=50}). The 50 genes are selected by fitting univariate Cox models.
+The above command generates the following output.
+
+<<>>=
+par(mfrow=c(2,2))
+plot(fit$model$Order, fit$model$nloglik, type="l")
+plot(fit$model$Order, fit$model$AIC, type="l")
+
+fit$model
+@
+
+This large gene model contains survival-associated genes which were selected one at a time
+by forward selection.  Note that  the first row has no gene ID because it was fitted with no expression profile.
+The size of  the large gene model was determined by the numbers of samples and genes considered.
+The AICs tend to decrease and then increase,
+while negative log-likelihood (nloglik) always decrease (see Figure).
+Thus, we select an optimal model with the smallest AIC.
+The selected parsimonious model consists of the survival-associated genes.
+
+
+Potential covariates can be included in modeling and it can be run iteratively.
+For example,  use $rbsurv(time=time, status=status, x=x, z=z, alpha=0.05, n.seq=2)$
+for significant covariates with level 0.05 and 2 iterative runs.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion}
+This package allows ones to build multiple gene models sequentially rather than a single gene model.
+Furthermore, other covariates such as age and gender can also be incorporated into modeling with gene expression profiles.
+Each model contains survival-associated genes that are selected robustly
+by separating train and test sets many times.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{.5in}
+{\large \bf References}
+\begin{itemize}
+\item[] Cho H et al. Robust likelihood-based survival modeling for microarray data, {\it submitted}.
+\item[] Freije, W.A., Castro-Vargas, F.E., Fang, Z., Horvath, S., Cloughesy, T., Liau, L.M., Mischel, P.S.
+and Nelson, S.F. (2004). Gene expression profiling of gliomas strongly predicts survival, Cancer Research,
+64:6503-6510.
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,5 @@
+rbsurv selects survival-associated genes.
+glioma.x is for gene expression data.
+glioma.y is for survival data.
+glioma.cov is for two covariates.
+
