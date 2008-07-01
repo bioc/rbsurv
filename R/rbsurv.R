@@ -5,11 +5,11 @@
 #
 #             by
 #
-#      HyungJun Cho and Sukwoo Kim
+#      HyungJun Cho, Sukwoo Kim, and Soo-heang Eo
 #      Deparments of Statistics and Biostatistics
 #      Korea University
 #
-#        March 2007
+#        June 2008
 #
 ##########################################################################
 
@@ -24,13 +24,15 @@
 # Main function  for users         
 #
 ###################################################################################
-rbsurv <- function(time, status, x, z=NULL, alpha=0.05, gene.ID=NULL, method="efron", 
-                              max.n.genes=100, n.iter=10, n.fold=3,  n.seq=1)
+rbsurv <- function(time, status, x, z=NULL, alpha=1, gene.ID=NULL, method="efron", 
+                              n.iter=10, n.fold=3,  n.seq=1, seed = 1234, max.n.genes=nrow(x))
 {
+
 
 
      ##########
      #Preparation
+     set.seed(seed)
      n.samples <- ncol(x) 
      n.genes    <- nrow(x) 
      if(is.data.frame(x)==FALSE) x <- data.frame(x)
@@ -64,7 +66,7 @@ rbsurv <- function(time, status, x, z=NULL, alpha=0.05, gene.ID=NULL, method="ef
      #############
      #Select significant covariates
       covariates <- " NONE"
-      if(is.null(z)==FALSE) 
+      if((is.null(z)==FALSE) | (alpha < 1)) 
       {
           k.covariates <- sig.covariates(time=time, status=status, z=z, method=method, alpha=alpha)
           if(length(k.covariates) >0) {
