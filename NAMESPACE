@@ -1,2 +1,8 @@
-export("rbsurv")
+import(Biobase)
+import(methods)
 
+export(rbsurv,
+        rbsurv.default
+        )
+
+S3method(rbsurv,default)

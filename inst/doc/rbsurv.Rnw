@@ -6,7 +6,7 @@
 %documentclass[12pt, a4paper]{article}
 \documentclass[12pt]{article}
 
-\usepackage{amsmath}
+\usepackage{amsmath,pstricks}
 \usepackage{hyperref}
 \usepackage[authoryear,round]{natbib}
 \usepackage{colortbl}
@@ -218,7 +218,7 @@ The selected parsimonious model consists of the survival-associated genes, which
 
 Potential risk factors can be included in modeling and it can be run sequentially.
 For example,  use $rbsurv(time=time, status=status, x=x, z=z, alpha=0.05, n.seq=3)$
-for significant risk factors with significance level 0.05 and 3 sequential runs. 
+for significant risk factors with significance level 0.05 and 3 sequential runs.
 All the risk factors are included if the significance level is 1.
  For the detailed algorithm, refer to Cho et al. (submitted).
 
@@ -228,8 +228,8 @@ In this section, we describe the arguments with the following command.
 
 \begin{verbatim}
 library(rbsurv)
-fit <- rbsurv(time=time, status=status, x=x, z=z, alpha=0.05, gene.ID=NULL, 
-               method="efron", max.n.genes=100, n.iter=100, n.fold=3, 
+fit <- rbsurv(time=time, status=status, x=x, z=z, alpha=0.05, gene.ID=NULL,
+               method="efron", max.n.genes=100, n.iter=100, n.fold=3,
                n.seq=3, seed = 1234)
 \end{verbatim}
 
@@ -237,14 +237,14 @@ The required arguments \Rfunarg{time} and \Rfunarg{status} are vectors for survi
 \Rfunarg{x} is a matrix for expression values (genes in rows, samples in columns). The optional argument \Rfunarg{z} is a matrix for risk factors.
 To include only the significant risk factors, a significance level less than 1 is given to \Rfunarg{alpha}, e.g., \Rfunarg{alpha} = 0.05.
 In addition, there are several controlled arguments. \Rfunarg{gene.ID} is a vector for gene IDs; if NULL, row numbers are assigned.
-\Rfunarg{method} is a character string specifying the method for tie handling.  One of \Rfunarg{efron}, \Rfunarg{breslow}, \Rfunarg{exact} can be chosen.  
-If there are no tied death times all the methods are equivalent. In the algorithm, 
+\Rfunarg{method} is a character string specifying the method for tie handling.  One of \Rfunarg{efron}, \Rfunarg{breslow}, \Rfunarg{exact} can be chosen.
+If there are no tied death times all the methods are equivalent. In the algorithm,
 \Rfunarg{n.fold} is the number of partitions of samples in step 1,
-\Rfunarg{n.iter} is the number of iterations for gene selection in step 2, and  
+\Rfunarg{n.iter} is the number of iterations for gene selection in step 2, and
 \Rfunarg{n.seq} is the number of sequential runs (or multiple models) in step 6.
 \Rfunarg{seed} is a seed for sample partitioning.
 \Rfunarg{max.n.genes} is the maximum number of genes considered.
-If the number of the input genes is greater than the given maximum number, 
+If the number of the input genes is greater than the given maximum number,
 it is reduced by fitting individual Cox models and selecting the genes with the smallest p-values.
 The input arguments of {\bf rbsurv} are summarized in Table 1.
 The major output \Rfunarg{fit\$model} contains survival-associated gene models with gene IDs, nlogliks, and AICs.
@@ -284,13 +284,22 @@ by separating training and test sets many times.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\vspace{.5in}
-{\large \bf References}
+%% \nocite{*}
+%% \bibliographystyle{jss}
+%% \bibliography{rbsurvrefs}
+
+\vspace{.5in} {\large \bf References}
 \begin{itemize}
-\item[] Cho, H., Yu, A., Kim, S., Kang, J., and Hong, S.-M. Robust likelihood-based survival modeling for microarray data, {\it submitted}.
+\item[]   Cho, H., Yu, A., Kim, S., Kang, J., Hong, S-M., (2009).
+  Robust Likelihood-Based Survival Modeling with Microarray Data.
+  \emph{Journal of Statistical Software} 29(1), 1-16. URL
+  http://www.jstatsoft.org/v29/i01/.
 \item[] Freije, W.A., Castro-Vargas, F.E., Fang, Z., Horvath, S., Cloughesy, T., Liau, L.M., Mischel, P.S.
-and Nelson, S.F. (2004). Gene expression profiling of gliomas strongly predicts survival, Cancer Research,
+and Nelson, S.F. (2004). Gene expression profiling of gliomas strongly predicts survival, \emph{Cancer Research},
 64:6503-6510.
 \end{itemize}
+
+
+
 
 \end{document}

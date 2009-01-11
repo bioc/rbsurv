@@ -1,11 +1,6 @@
-##########################################################################
-#
-# Robust likelihood-based selection
-#
-##########################################################################
-rbsurv.rule.boot <- function(x.train, y.train, st.train, x.test=NULL, y.test=NULL, st.test=NULL, 
+'rbsurv.rule.boot' <- function(x.train, y.train, st.train, x.test=NULL, y.test=NULL, st.test=NULL,
                                             n.iter=10, nfold=3, method="efron") {
-       
+
 
      ##########
      #Preparation
@@ -13,8 +8,8 @@ rbsurv.rule.boot <- function(x.train, y.train, st.train, x.test=NULL, y.test=NUL
      n.sample.train <- nrow(x.train)
      colnames(x.train) <- 1:n.gene
 
-      if(is.null(y.test)==FALSE)  
-      { 
+      if(is.null(y.test)==FALSE)
+      {
          n.sample.test  <- nrow(x.test)
          colnames(x.test)  <- 1:n.gene
       }
@@ -42,9 +37,9 @@ rbsurv.rule.boot <- function(x.train, y.train, st.train, x.test=NULL, y.test=NUL
      null.AIC.train <- tmp$AIC
      null.BIC.train <- tmp$BIC
 
-     #Evaluate by test set     
-      if(is.null(y.test)==FALSE)  
-      { 
+     #Evaluate by test set
+      if(is.null(y.test)==FALSE)
+      {
           tie <- TRUE; if(length(unique(y.test)) == length(y.test)) tie <- FALSE
           tmp <- option.rbsurv.null(y.train, st.train, y.test, st.test, tie=tie, method=method)
           null.nloglik <- tmp$nloglik
@@ -58,15 +53,15 @@ rbsurv.rule.boot <- function(x.train, y.train, st.train, x.test=NULL, y.test=NUL
      out <- matrix(0, n.iter, n.gene)
      for(i in 1:n.iter) {
         id <- id.sample(st.train, nfold=nfold)
-        y.tr <- y.train[id!=1] 
+        y.tr <- y.train[id!=1]
         y.te <- y.train[id==1]
         st.tr <- st.train[id!=1]
         st.te <- st.train[id==1]
         tie <- TRUE; if(length(unique(y.te)) == length(y.te)) tie <- FALSE
         for(j in 1:n.gene) {
             x.tr <- data.frame(x.train[id!=1,j, drop=FALSE])
-            x.te <- data.frame(x.train[id==1,j, drop=FALSE]) 
-            out[i,j] <- option.rbsurv(x.tr, y.tr, st.tr, x.te, y.te, st.tr, 
+            x.te <- data.frame(x.train[id==1,j, drop=FALSE])
+            out[i,j] <- option.rbsurv(x.tr, y.tr, st.tr, x.te, y.te, st.tr,
                                 tie=tie, method=method, k=2)$nloglik
         }
      }
@@ -86,18 +81,18 @@ rbsurv.rule.boot <- function(x.train, y.train, st.train, x.test=NULL, y.test=NUL
      #Evaluate by train set
      xx.train <- data.frame(x.train[,opt.genes,drop=FALSE])
      tie <- TRUE; if(length(unique(y.train)) == length(y.train)) tie <- FALSE
-     tmp <- option.rbsurv(xx.train, y.train, st.train, xx.train, y.train, st.train, 
+     tmp <- option.rbsurv(xx.train, y.train, st.train, xx.train, y.train, st.train,
                     tie=tie, method=method, k=2)
      opt.nloglik.train <- c(opt.nloglik.train, tmp$nloglik)
      opt.AIC.train <- c(opt.AIC.train, tmp$AIC)
      opt.BIC.train <- c(opt.BIC.train, tmp$BIC)
 
      #Evaluate by test set
-     if(is.null(y.test)==FALSE)  
-     { 
-          xx.test  <- data.frame(x.test[,opt.genes,drop=FALSE])     
+     if(is.null(y.test)==FALSE)
+     {
+          xx.test  <- data.frame(x.test[,opt.genes,drop=FALSE])
           tie <- TRUE; if(length(unique(y.test)) == length(y.test)) tie <- FALSE
-          tmp <- option.rbsurv(xx.train, y.train, st.train, xx.test, y.test, st.test, 
+          tmp <- option.rbsurv(xx.train, y.train, st.train, xx.test, y.test, st.test,
                                          tie=tie, method=method, k=2)
           opt.nloglik <- c(opt.nloglik, tmp$nloglik)
           opt.AIC  <- c(opt.AIC, tmp$AIC)
@@ -107,7 +102,7 @@ rbsurv.rule.boot <- function(x.train, y.train, st.train, x.test=NULL, y.test=NUL
 
      ####################
      #Pick k-gene model (k >1)
-     i.stop <- 0 
+     i.stop <- 0
      for(jj in 2:(n.gene-1)) {
         n.gene.cand <- n.gene-jj+1
         out <- matrix(0, n.iter, n.gene.cand)
@@ -122,15 +117,15 @@ rbsurv.rule.boot <- function(x.train, y.train, st.train, x.test=NULL, y.test=NUL
             for(j in 1:n.gene.cand) {
                 x.tr <- data.frame(x.train.opt[id!=1,,drop=FALSE], x.train.cand[id!=1,j,drop=FALSE])
                 x.te <- data.frame(x.train.opt[id==1,,drop=FALSE], x.train.cand[id==1,j,drop=FALSE])
-                out[i,j] <- option.rbsurv(x.tr, y.tr, st.tr, x.te, y.te, st.tr, 
+                out[i,j] <- option.rbsurv(x.tr, y.tr, st.tr, x.te, y.te, st.tr,
                                     tie=tie, method=method, k=2)$nloglik
-                #print(j) 
+                #print(j)
                 #print(out[i,j])
             }
         }
 
         ii <- which(apply(apply(out, 2, is.na), 2, sum) >0)
-        if(length(ii) >= ncol(out)) break 
+        if(length(ii) >= ncol(out)) break
         if(length(ii) > 0) out[,ii] <- max(out, na.rm=TRUE)+1
         out.sum <- apply(out, 2, sum, na.rm = TRUE)
         if(length(unique(out.sum)) == 1) break #WHY same???
@@ -145,18 +140,18 @@ rbsurv.rule.boot <- function(x.train, y.train, st.train, x.test=NULL, y.test=NUL
         #Evaluate by train set
         xx.train <- x.train[,opt.genes,drop=FALSE]
         tie <- TRUE; if(length(unique(y.train)) == length(y.train)) tie <- FALSE
-        tmp <- option.rbsurv(xx.train, y.train, st.train, xx.train, y.train, st.train, 
+        tmp <- option.rbsurv(xx.train, y.train, st.train, xx.train, y.train, st.train,
                        tie=tie, method=method, k=2)
         opt.nloglik.train <- c(opt.nloglik.train, tmp$nloglik)
         opt.AIC.train  <- c(opt.AIC.train, tmp$AIC)
         opt.BIC.train  <- c(opt.BIC.train, tmp$BIC)
 
         #Evaluate by test set
-        if(is.null(y.test)==FALSE)  
-       { 
+        if(is.null(y.test)==FALSE)
+       {
             xx.test  <- x.test[,opt.genes,drop=FALSE]
             tie <- TRUE; if(length(unique(y.test)) == length(y.test)) tie <- FALSE
-            tmp <- option.rbsurv(xx.train, y.train, st.train, xx.test,  y.test, st.test, 
+            tmp <- option.rbsurv(xx.train, y.train, st.train, xx.test,  y.test, st.test,
                                              tie=tie, method=method, k=2)
             opt.nloglik <- c(opt.nloglik, tmp$nloglik)
             opt.AIC  <- c(opt.AIC, tmp$AIC)
@@ -164,24 +159,24 @@ rbsurv.rule.boot <- function(x.train, y.train, st.train, x.test=NULL, y.test=NUL
         }
 
         #stop if min number of classes is less than 2
-        if(sum(st.train)*(1-1/nfold) <= length(opt.genes)+1) break    
+        if(sum(st.train)*(1-1/nfold) <= length(opt.genes)+1) break
 
     }
 
-    ####### 
+    #######
     #Outputs
-    if(is.null(y.test)==TRUE)  
-    { 
-        opt.nloglik  <- opt.nloglik.train 
-        opt.AIC       <- opt.AIC.train 
-        null.nloglik <-  null.nloglik.train 
-        null.AIC      <- null.AIC.train 
+    if(is.null(y.test)==TRUE)
+    {
+        opt.nloglik  <- opt.nloglik.train
+        opt.AIC       <- opt.AIC.train
+        null.nloglik <-  null.nloglik.train
+        null.AIC      <- null.AIC.train
     }
 
     i <- 1:length(opt.genes)
     final.out <- data.frame(i, opt.genes, opt.nloglik.train, opt.AIC.train, opt.nloglik, opt.AIC)
     colnames(final.out) <- c("Order","Gene","Train.nloglik","Train.AIC", "nloglik","AIC")
-    
+
     i <- 0
     final.out.null <- data.frame(i, i, null.nloglik.train, null.AIC.train,  null.nloglik, null.AIC)
     colnames(final.out.null) <- c("Order","Gene","Train.nloglik","Train.AIC", "nloglik","AIC")
@@ -190,30 +185,3 @@ rbsurv.rule.boot <- function(x.train, y.train, st.train, x.test=NULL, y.test=NUL
     return(final.out)
 
 }
-
-
-################################################################
-#Randomization for splitting
-id.sample <- function(x, nfold=3){
-     n1 <- sum(x)
-     n0 <- sum(1-x)
- 
-     if(n1 < 5) stop(' The number of uncensored cases is too small!')
-     if(n1 < 3*nfold) stop(' The number of fold is too large!')
-     if(n0 <=0) { 
-        id <- sample(rep((1:nfold),n1)[1:n1]) 
-        return(id)
-     }
-
-     id1 <- sample(rep((1:nfold),n1)[1:n1]) 
-     id0 <- sample(rep((1:nfold),n0)[1:n0]) 
-     id <- c(id0, id1)
-
-     i <- (1:length(id))[sort.list(x)]
-     id <- id[sort.list(i)]
-     #print(table(id, x))
-     return(id)
-
-}
-
-#END######################################################
