@@ -1,0 +1,137 @@
+<html><head><title>Robust likelihood-based survival modeling</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="Rchm.css">
+</head>
+<body>
+
+<table width="100%"><tr><td>rbsurv.default(rbsurv)</td><td align="right">R Documentation</td></tr></table><object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="keyword" value="R:   rbsurv.default">
+<param name="keyword" value=" Robust likelihood-based survival modeling">
+</object>
+
+
+<h2>Robust likelihood-based survival modeling</h2>
+
+
+<h3>Description</h3>
+
+<p>
+This selects survival-associated genes with microarray data.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+    ## Default S3 method:
+    rbsurv(time, status, x, z=NULL, alpha=1, gene.ID=NULL, method="efron",
+                   n.iter=10, n.fold=3,  n.seq=1,  seed=1234, max.n.genes=nrow(x),...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>time</code></td>
+<td>
+a vector for survival times</td></tr>
+<tr valign="top"><td><code>status</code></td>
+<td>
+a vector for survival status, 0=censored, 1=event</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+a matrix for expression values (genes in rows, samples in columns)</td></tr>
+<tr valign="top"><td><code>z</code></td>
+<td>
+a matrix for risk factors</td></tr>
+<tr valign="top"><td><code>alpha</code></td>
+<td>
+significance level for evaluating  risk factors; significant risk factors included with the alpha level 
+if alpha &lt; 1</td></tr>
+<tr valign="top"><td><code>gene.ID</code></td>
+<td>
+a vector for gene IDs; if NULL, row numbers are assigned.</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+a character string specifying the method for tie handling.  Choose one of "efron", "breslow",
+"exact". The default is "efron".  If there are no tied death times all the methods are equivalent. </td></tr>
+<tr valign="top"><td><code>n.iter</code></td>
+<td>
+the number of iterations for gene selection</td></tr>
+<tr valign="top"><td><code>n.fold</code></td>
+<td>
+the number of partitions of samples</td></tr>
+<tr valign="top"><td><code>n.seq</code></td>
+<td>
+the number of sequential runs or multiple models</td></tr>
+<tr valign="top"><td><code>seed</code></td>
+<td>
+a seed for sample partitioning</td></tr>
+<tr valign="top"><td><code>max.n.genes</code></td>
+<td>
+the maximum number of genes considered.
+If the number of the input genes is greater than the given number, it is reduced by fitting individual Cox models.</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+other arguments</td></tr>
+</table>
+
+<h3>Value</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>model</code></td>
+<td>
+survival-associated gene model</td></tr>
+<tr valign="top"><td><code>n.genes</code></td>
+<td>
+number of genes</td></tr>
+<tr valign="top"><td><code>n.samples</code></td>
+<td>
+number of samples</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+method for tie handling</td></tr>
+<tr valign="top"><td><code>covariates</code></td>
+<td>
+covariates</td></tr>
+<tr valign="top"><td><code>n.iter</code></td>
+<td>
+number of iterations for gene seletion</td></tr>
+<tr valign="top"><td><code>n.fold</code></td>
+<td>
+number of partitions of samples</td></tr>
+<tr valign="top"><td><code>n.seq</code></td>
+<td>
+number of sequential runs or multiple models</td></tr>
+<tr valign="top"><td><code>gene.list</code></td>
+<td>
+a list of genes included in the models</td></tr>
+</table>
+
+<h3>Author(s)</h3>
+
+<p>
+HyungJun Cho, Sukwoo Kim, Soo-heang Eo, and Jaewoo Kang
+</p>
+
+
+<h3>References</h3>
+
+<p>
+Cho,H., Yu,A., Kim,S., Kang,J., and Hong S-M. (2009).
+Robust likelihood-based survival modeling for microarray gene expression Data,
+<EM>Journal of Statistical Software</EM>, 29(1):1-16. URL http://www.jstatsoft.org/v29/i01/.
+</p>
+
+
+<h3>See Also</h3>
+
+<p>
+<code><a href="rbsurv.html">rbsurv</a></code>
+</p>
+
+
+
+<hr><div align="center">[Package <em>rbsurv</em> version 2.0.0 <a href="00Index.html">Index]</a></div>
+
+</body></html>

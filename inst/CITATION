@@ -1,0 +1,23 @@
+citHeader("To cite rbsurv in publications use:")
+
+citEntry(entry = "Article",
+  title        = "Robust Likelihood-Based Survival Modeling with Microarray Data",
+  author       = personList(as.person("HyungJun Cho"),
+                   as.person("Ami Yu"),
+                   as.person("Sukwoo Kim"),
+                   as.person("Jaewoo Kang"),
+                   as.person("Seung-Mo Hong")),
+  journal      = "Journal of Statistical Software",
+  year         = "2009",
+  volume       = "29",
+  number       = "1",
+  pages        = "1--6",
+  url          = "http://www.jstatsoft.org/v29/i01/",
+
+  textVersion  =
+  paste("HyungJun Cho, Ami Yu, Sukwoo Kim, Jaewoo Kang, Seung-Mo Hong (2009).",
+        "Robust Likelihood-Based Survival Modeling with Microarray Data.",
+        "Journal of Statistical Software 29(1), 1-16.",
+        "URL http://www.jstatsoft.org/v29/i01/.")
+)
+
