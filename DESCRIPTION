@@ -1,5 +1,5 @@
 Package: rbsurv
-Version: 2.0.0
+Version: 2.0.1
 Date: 2008-12-31
 Title: Robust likelihood-based survival modeling with microarray data
 Author: HyungJun Cho <hj4cho@korea.ac.kr>,
@@ -9,7 +9,7 @@ Author: HyungJun Cho <hj4cho@korea.ac.kr>,
 Maintainer: Soo-heang Eo <hanansh@korea.ac.kr>
 Depends: R (>= 2.5.0), Biobase, survival
 Description: This package selects genes associated with survival.
-biocViews: Microarray, Statistics
+biocViews: Microarray, Bioinformatics
 License: GPL (>=2)
 URL:http://www.korea.ac.kr/~stat2242/
 Packaged: Thu Jan  1 13:12:58 2009; hanansh
